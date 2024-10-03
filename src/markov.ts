@@ -184,13 +184,7 @@ export class Chain {
 
     const r = Math.random() * cumSum;
 
-    let randomIndex;
-    for (
-      randomIndex = 0;
-      randomIndex < cumulativeDistribution.length &&
-      r >= cumulativeDistribution[randomIndex];
-      randomIndex++
-    );
+    let randomIndex = bisect(cumulativeDistribution, r);
 
     return choices[randomIndex];
   }
@@ -237,6 +231,7 @@ export function createStateKey(originalState: any): string {
  *
  * @private
  * @param {number} stateSize How many states to create
+ * @return {string[]} An array of `BEGIN` states
  */
 export function createBeginState(stateSize: number): string[] {
   var beginStates: string[] = [];
@@ -249,8 +244,8 @@ export function createBeginState(stateSize: number): string[] {
 /**
  * Returns the last item in an array
  * @private
- * @param {any[]} arr The array to get the last item from
- * @return {any} The last item in the array
+ * @param {Object[]} arr The array to get the last item from
+ * @return {Object} The last item in the array
  */
 export function last(arr: any[]): any {
   return arr[arr.length - 1];
@@ -258,6 +253,11 @@ export function last(arr: any[]): any {
 
 /**
  * A port of Python's `bisect.bisect_right`, similar to lodash's `sortedIndex`
+ * @private
+ * @param {number[]} list The list to search
+ * @param {number} num The number to search for
+ * @param {number} [high=list.length] The high value to search up to
+ * @return {number} The index of the number in the list
  */
 export function bisect(list: any[], num: number, high: number = list.length) {
   let currLow = 0;
